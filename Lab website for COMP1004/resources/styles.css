@@ -42,6 +42,30 @@ body {
 
 }
 
+.button {
+
+	display:inline-block; 
+	position: relative; 
+	padding: 5px; 
+	background-color:#007BFF; 
+	width: 23%;
+	color:white; 
+	text-decoration: none;
+
+}
+
+.fake_button {
+
+	display: inline-block;
+	position: relative;
+	padding: 10px;
+	background-color: #0074B4;
+	width: 10%;
+	color: white;
+	text-decoration: none;
+	
+}
+
 img {
 	
 	display: block;
