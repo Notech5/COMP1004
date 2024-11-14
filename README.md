@@ -1,3 +1,3 @@
 # COMP1004
 
-Something idk
+Files related to the COMP1004 module
