@@ -43,17 +43,18 @@ body {
 
 .button {
 
-	display:inline-block; 
+	display: inline-block; 
 	position: relative; 
 	padding: 5px; 
-	background-color:#007BFF; 
+	background-color: #007BFF; 
 	width: 23%;
-	color:white; 
+	color: white; 
 	text-decoration: none;
 
 }
 
 .button_darker {
+
 	display: inline-block;
 	position: relative;
 	padding: 5px;
@@ -61,18 +62,7 @@ body {
 	width: 23%;
 	color: white;
 	text-decoration: none;
-}
 
-.fake_button {
-
-	display: inline-block;
-	position: relative;
-	padding: 10px;
-	background-color: #0074B4;
-	width: 10%;
-	color: white;
-	text-decoration: none;
-	
 }
 
 img {
