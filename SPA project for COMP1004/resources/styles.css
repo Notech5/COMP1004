@@ -19,27 +19,46 @@ p {
 }
 
 body {
-
+	
 	background-image: url(images/180107.jpg);
 	background-position: center;
 	background-size: 110%;
 	background-attachment: fixed;
 	background-repeat: no-repeat;
-	position: absolute;
+	/*position: absolute;*/
 
 }
 
 .content {
-
-	background-color: white; 
+	
+	
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	background-color: white;
 	border: 1px solid black;
-	width: 40%; 
-	height: 100%; 
-	margin: auto; 
+	width: 40%;
 	padding: 5px;
 	text-align: center;
 
 }
+
+/*
+.content {
+
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: white; 
+	border: 1px solid black;
+	width: 40%; 
+	height: 100%; 
+	
+	padding: 5px;
+	text-align: center;
+	
+}
+*/
 
 .button {
 
