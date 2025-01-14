@@ -1,3 +1,3 @@
 # COMP1004
 
-Files related to the COMP1004 module
+These are the files which make up my SPA for the COMP1004 module at the University of Plymouth
