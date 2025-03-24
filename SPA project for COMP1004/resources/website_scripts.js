@@ -15,9 +15,16 @@ function readJSON() {
 
             createTable(data.locos);
 
+            test(data);
+
+
         })
 
         .catch(error => console.error('Error loading JSON:', error));
+
+
+    
+
 
 }
 
@@ -105,8 +112,20 @@ function switchscreen(current) {
 
 }
 
+//test function for storing data in localStorage
+function test(data) {
 
+    var testString = JSON.stringify(data);
 
+    localStorage.setItem('added-items', testString);
+
+    var testRetrieve = localStorage.getItem('added-items');
+
+    var parsedObject = JSON.parse(testRetrieve);
+
+    console.log(parsedObject.locos[1]);
+
+}
 
 
 
@@ -217,4 +236,57 @@ function listScreen() {
 
 }
 */
+
+
+//Creates the table
+/*
+function createTable(data) {
+
+    //checks if there is no array
+    if (!Array.isArray(data.locos)) {
+
+        console.log("Error: This is not an array")
+
+    }
+
+    //checks if there is no data present
+    if (Array.isArray(data) && data.length === 0) {
+
+        console.log("Error: No data present")
+
+    }
+
+    const table = document.createElement('table');
+    const tableHead = document.createElement('thead');
+    const tableBody = document.createElement('tbody');
+
+    // Append the table head and body to the table
+    table.appendChild(tableHead);
+    table.appendChild(tableBody);
+
+    // Creating table head
+    let row = tableHead.insertRow();
+    Object.keys(data.locos[0]).forEach(key => {
+        let th = document.createElement('th');
+        th.textContent = key.toUpperCase();
+        row.appendChild(th);
+    });
+
+    // Creating table body
+    data.forEach(item => {
+        let row = tableBody.insertRow();
+        Object.values(item).forEach(value => {
+            let cell = row.insertCell();
+            cell.textContent = value;
+        });
+    });
+
+    const container = document.getElementById('table-container');
+
+    // Append the table to the HTML document
+    
+}
+*/
+
+
 
