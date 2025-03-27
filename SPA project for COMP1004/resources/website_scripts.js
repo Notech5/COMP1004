@@ -10,26 +10,32 @@ function readJSON() {
     fetch('C:/Users/noahm/Desktop/website project/resources/json/locos.json')
         .then(response => response.json())
         .then(data => {
-            
+
+            //delete data.locos[1];
+
+            //delete data.locos[4];
+
             console.log(data)
 
-            createTable(data.locos);
-
+            console.log(data.locos.length);
+            
             test(data);
 
+            createTable();
 
         })
 
         .catch(error => console.error('Error loading JSON:', error));
 
-
-    
-
-
 }
 
 //Creates the table
-function createTable(data) {
+function createTable() {
+
+    //retrieved loco data from localStorage 
+    var retrieveLocos = localStorage.getItem('locomotives');
+    var parsedObject = JSON.parse(retrieveLocos);
+    let data = parsedObject.locos;
 
     const container = document.getElementById('table-container');
 
@@ -75,6 +81,7 @@ function home() {
 }
 
 //Switches to the class180 div
+//not used
 function class180() {
 
     switchscreen('class180');
@@ -115,17 +122,62 @@ function switchscreen(current) {
 //test function for storing data in localStorage
 function test(data) {
 
-    var testString = JSON.stringify(data);
+    var string = JSON.stringify(data);
 
-    localStorage.setItem('added-items', testString);
+    localStorage.setItem('locomotives', string);
 
-    var testRetrieve = localStorage.getItem('added-items');
+    var testRetrieve = localStorage.getItem('locomotives');
 
     var parsedObject = JSON.parse(testRetrieve);
 
     console.log(parsedObject.locos[1]);
 
+    return parsedObject;
+
 }
+
+function push(x) {
+
+
+
+
+
+
+}
+
+/*
+const form = document.getElementById('myForm');
+
+form.addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    // 1: get form data
+    const formData = new FormData(form);
+    // 2: store form data in object
+    const jsonObject = Object.fromEntries(formData);
+    // 3: convert form data object to a JSON string
+    const jsonString = JSON.stringify(jsonObject);
+
+    console.log(jsonString); // '{"name":"John","email":"john@example.com","age":"30"}'
+});
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

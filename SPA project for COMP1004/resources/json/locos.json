@@ -1,6 +1,13 @@
 {
 
   "locos": [
+
+    {
+      "address": null,
+      "name": null,
+      "number": null
+    },
+
     {
       "address": 41,
       "name": "N/A",
@@ -30,6 +37,50 @@
       "name": "Holland America Line",
       "number": 35022
     },
+
+    {
+      "address": 6003,
+      "name": "Flying Scotsman",
+      "number": 60103
+    },
+
+    {
+      "address": 3767,
+      "name": "N/A",
+      "number": 37607
+    },
+
+    {
+      "address": 5520,
+      "name": "Nimbus",
+      "number": 55020
+    },
+
+    {
+      "address": 9466,
+      "name": "N/A",
+      "number": 9466
+    },
+
+    {
+      "address": 4620,
+      "name": "N/A",
+      "number": 46020
+    },
+
+    {
+      "address": 1355,
+      "name": "Royal Signals",
+      "number": 55
+    },
+
+    {
+      "address": 4546,
+      "name": "Royal Fusilier",
+      "number": 45046
+    },
+
+
 
     {
       "address": 8701,
