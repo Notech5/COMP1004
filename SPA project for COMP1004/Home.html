@@ -32,7 +32,7 @@
         <!--Buttons to switch between screens-->
         <button class="button" onclick="home()">Home</button>
 
-        <button class="button" onclick="class180()">Class 180</button>
+        <button class="button" onclick="class180()">Add Locomotives</button>
 
         <button class="button" onclick="fileScreen()">Image Upload</button>
 
@@ -71,7 +71,7 @@
 
         <button class="button" onclick="home()">Home</button>
 
-        <button class="button" onclick="class180()">Class 180</button>
+        <button class="button" onclick="class180()">Add locomotives</button>
 
         <button class="button" onclick="fileScreen()">Image Upload</button>
 
@@ -91,9 +91,16 @@
 
 
         <form id="myForm">
-            <input type="number" id="addressInput" name="address" />
-            <input type="text" id="nameInput" name="name" />
-            <input type="number" id="numberInput" name="number" />
+
+            <label for="addressInput">Locomotive address:</label><br>
+            <input type="number" id="addressInput" name="address" /><br />
+
+            <label for="nameInput">Locomotive name:</label><br>
+            <input type="text" id="nameInput" name="name" /><br />
+
+            <label for="numberInput">Locomotive number:</label><br>
+            <input type="number" id="numberInput" name="number" /><br />
+
             <button type="submit">Submit</button>
         </form>
 
@@ -110,7 +117,15 @@
                 const locoAddress = document.getElementById('addressInput').value;
                 const addressParsed = parseInt(locoAddress);
 
-                const locoName = document.getElementById('nameInput').value;
+                //this is a var as it may need to be altered before the JSON is pushed
+                var locoName = document.getElementById('nameInput').value;
+
+                //checks if the field is empty
+                if (locoName == '') {
+
+                    locoName = 'N/A';
+
+                }
 
                 const number = document.getElementById('numberInput').value;
                 const numberParsed = parseInt(number);
@@ -128,21 +143,32 @@
 
                     console.log(formJSON);
 
+                    var string = JSON.stringify(formJSON);
+
+                    //localStorage.setItem('locomotives', string);
+
+                    push(formJSON);
+
                     createTable();
 
                 }
+
+                /*
+
+                //now redundant due to validation
 
                 if (isEmpty) {
 
                     alert('Please fill out all fields');
 
                 }
+                */
+
+                form.reset();
                 
 
-                
 
-
-
+                //old code
                 
                 /*
                 // 1: get form data
@@ -159,129 +185,6 @@
                 //console.log(jsonObject); // '{"name":"John","email":"john@example.com","age":"30"}'
             });
 
-
-
-
-
-
-
-
-
-        </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-        <!--
-    <table>
-        <tr>
-            <th>Number</th>
-            <th>Name</th>
-            <th>Operator</th>
-            <th>Status</th>
-        </tr>
-        <tr>
-            <td>180101</td>
-            <td>N/A</td>
-            <td>Grand Central</td>
-            <td>Operational</td>
-        </tr>
-        <tr>
-            <td>180102</td>
-            <td>N/A</td>
-            <td>Grand Central</td>
-            <td>Operational</td>
-        </tr>
-        <tr>
-            <td>180103</td>
-            <td>N/A</td>
-            <td>Grand Central</td>
-            <td>Operational</td>
-        </tr>
-        <tr>
-            <td>180104</td>
-            <td>N/A</td>
-            <td>Grand Central</td>
-            <td>Operational</td>
-        </tr>
-        <tr>
-            <td>180105</td>
-            <td>Ashley Jackson - The Yorkshire Artist</td>
-            <td>Grand Central</td>
-            <td>Operational</td>
-        </tr>
-        <tr>
-            <td>180106</td>
-            <td>N/A</td>
-            <td>Grand Central</td>
-            <td>Operational</td>
-        </tr>
-        <tr>
-            <td>180107</td>
-            <td>Hart of the North</td>
-            <td>Grand Central</td>
-            <td>Operational</td>
-        </tr>
-        <tr>
-            <td>180108</td>
-            <td>William Shakespeare</td>
-            <td>Grand Central</td>
-            <td>Operational</td>
-        </tr>
-        <tr>
-            <td>180109</td>
-            <td>N/A</td>
-            <td>Grand Central</td>
-            <td>Stored</td>
-        </tr>
-        <tr>
-            <td>180110</td>
-            <td>N/A</td>
-            <td>Grand Central</td>
-            <td>Stored</td>
-        </tr>
-        <tr>
-            <td>180111</td>
-            <td>N/A</td>
-            <td>Grand Central</td>
-            <td>Stored</td>
-        </tr>
-        <tr>
-            <td>180112</td>
-            <td>James Herriot</td>
-            <td>Grand Central</td>
-            <td>Operational</td>
-        </tr>
-        <tr>
-            <td>180113</td>
-            <td>N/A</td>
-            <td>Grand Central</td>
-            <td>Stored</td>
-        </tr>
-        <tr>
-            <td>180114</td>
-            <td>Kirkgate Calling</td>
-            <td>Grand Central</td>
-            <td>Operational</td>
-        </tr>
-
-    </table>
-
-    -->
-
-        <script>
-
-
-
         </script>
 
     </div>
@@ -296,7 +199,7 @@
         <!--Buttons to switch between screens-->
         <button class="button" onclick="home()">Home</button>
 
-        <button class="button" onclick="class180()">Class 180</button>
+        <button class="button" onclick="class180()">Add Locomotives</button>
 
         <button class="button" onclick="fileScreen()">Image Upload</button>
 
@@ -323,7 +226,7 @@
         <!--Buttons to switch between screens-->
         <button class="button" onclick="home()">Home</button>
 
-        <button class="button" onclick="class180()">Class 180</button>
+        <button class="button" onclick="class180()">Add Locomotives</button>
 
         <button class="button" onclick="fileScreen()">Image Upload</button>
 

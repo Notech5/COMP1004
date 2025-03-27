@@ -15,16 +15,21 @@ function readJSON() {
 
             //delete data.locos[4];
 
+            //for debugging
             console.log(data)
 
+            //for debugging
             console.log(data.locos.length);
-            
-            test(data);
 
+            //function to store the data in localstorage after reading it from the file
+            storage(data);
+
+            //creates the table after JSON read
             createTable();
 
         })
 
+        
         .catch(error => console.error('Error loading JSON:', error));
 
 }
@@ -35,7 +40,7 @@ function createTable() {
     //retrieved loco data from localStorage 
     var retrieveLocos = localStorage.getItem('locomotives');
     var parsedObject = JSON.parse(retrieveLocos);
-    let data = parsedObject.locos;
+    const data = parsedObject.locos;
 
     const container = document.getElementById('table-container');
 
@@ -119,31 +124,57 @@ function switchscreen(current) {
 
 }
 
-//test function for storing data in localStorage
-function test(data) {
+//---LOCALSTORAGE AND JSON HANDLING---//
 
-    var string = JSON.stringify(data);
+//reads data from the JSON file and stores it in localStorage
+function storage(data) {
 
-    localStorage.setItem('locomotives', string);
+    //only stores the data if localstorage is empty to prevent erasure of user data
+    if (localStorage.length == 0) {
 
-    var testRetrieve = localStorage.getItem('locomotives');
+        var string = JSON.stringify(data);
 
-    var parsedObject = JSON.parse(testRetrieve);
+        localStorage.setItem('locomotives', string);
 
-    console.log(parsedObject.locos[1]);
+        var testRetrieve = localStorage.getItem('locomotives');
 
-    return parsedObject;
+        var parsedObject = JSON.parse(testRetrieve);
+
+        console.log(parsedObject.locos[1]);
+
+        return parsedObject;
+
+    }
 
 }
 
+//pushes a new object onto the JSON array
 function push(x) {
 
+    console.clear();
 
+    //retrieves the JSON array
+    var retrieve = localStorage.getItem('locomotives');
+    var parsed = JSON.parse(retrieve);
 
+    //for debugging
+    console.log(parsed);
 
+    let newObject = x;
 
+    //pushes the new object
+    parsed.locos.push(newObject);
+
+    //for debugging
+    console.log(parsed);
+
+    //updates localstorage
+    var store = JSON.stringify(parsed);
+    localStorage.setItem('locomotives', store);
 
 }
+
+//---OLD CODE---//
 
 /*
 const form = document.getElementById('myForm');
@@ -162,29 +193,6 @@ form.addEventListener('submit', function (event) {
 });
 
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//---OLD CODE---//
 
 /*
 function fileScreen() {
