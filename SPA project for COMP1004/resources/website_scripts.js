@@ -3,11 +3,38 @@
 //---JSON FUNCTIONS---//
 
 //Accesses and reads the JSON file, and then creates the table
-function readJSON() {
+
+
+//new readJSON function which makes use of fileReader
+function readJSON(file) {
+
+    localStorage.clear();
+
+    const reader = new FileReader();
+
+    reader.onload = event => {
+
+        const data = JSON.parse(event.target.result);
+        storage(data);  // Store the data
+        createTable();  // Create the table with the data
+
+    };
+
+    reader.readAsText(file);
+
+}
+
+
+
+
+//the original readJSON function which used the fetch command
+
+/*
+function readJSON(x) {
 
     console.clear();
 
-    fetch('C:/Users/noahm/Desktop/website project/resources/json/locos.json')
+    fetch(x)
         .then(response => response.json())
         .then(data => {
 
@@ -29,52 +56,59 @@ function readJSON() {
 
         })
 
-        
         .catch(error => console.error('Error loading JSON:', error));
 
 }
+*/
 
-//Creates the table
+
+
+
+
 function createTable() {
 
-    //retrieved loco data from localStorage 
-    var retrieveLocos = localStorage.getItem('locomotives');
-    var parsedObject = JSON.parse(retrieveLocos);
-    const data = parsedObject.locos;
+    if (localStorage.length > 0) {
+        //retrieved loco data from localStorage 
+        var retrieveLocos = localStorage.getItem('locomotives');
+        var parsedObject = JSON.parse(retrieveLocos);
+        const data = parsedObject.locos;
 
-    const container = document.getElementById('table-container');
+        const container = document.getElementById('table-container');
+       
+        container.innerHTML = "";
 
-    container.innerHTML = "";
+        const table = document.createElement('table');
+        const tableHead = document.createElement('thead');
+        const tableBody = document.createElement('tbody');
 
-    const table = document.createElement('table');
-    const tableHead = document.createElement('thead');
-    const tableBody = document.createElement('tbody');
+        // Append the table head and body to table
+        table.appendChild(tableHead);
+        table.appendChild(tableBody);
 
-    // Append the table head and body to table
-    table.appendChild(tableHead);
-    table.appendChild(tableBody);
-
-    // Creating table head
-    let row = tableHead.insertRow();
-    Object.keys(data[0]).forEach(key => {
-        let th = document.createElement('th');
-        th.textContent = key.toUpperCase();
-        row.appendChild(th);
-    });
-
-    // Creating table body
-    data.forEach(item => {
-        let row = tableBody.insertRow();
-        Object.values(item).forEach(value => {
-            let cell = row.insertCell();
-            cell.textContent = value;
+        // Creating table head
+        let row = tableHead.insertRow();
+        Object.keys(data[0]).forEach(key => {
+            let th = document.createElement('th');
+            th.textContent = key.toUpperCase();
+            row.appendChild(th);
         });
-    });
 
-    // Append the table to the HTML document
-    container.appendChild(table);
-    
+        // Creating table body
+        data.forEach(item => {
+            let row = tableBody.insertRow();
+            Object.values(item).forEach(value => {
+                let cell = row.insertCell();
+                cell.textContent = value;
+            });
+            
+        });
+
+        // Append the table to the HTML document
+        container.appendChild(table);
+    }
 }
+
+
 
 //---SWITCH FUNCTIONS---//
 
@@ -132,45 +166,104 @@ function storage(data) {
     //only stores the data if localstorage is empty to prevent erasure of user data
     if (localStorage.length == 0) {
 
+        localStorage.clear();
+
         var string = JSON.stringify(data);
 
         localStorage.setItem('locomotives', string);
 
+        //debugging code
         var testRetrieve = localStorage.getItem('locomotives');
 
         var parsedObject = JSON.parse(testRetrieve);
 
         console.log(parsedObject.locos[1]);
 
-        return parsedObject;
-
     }
 
 }
 
-//pushes a new object onto the JSON array
+//pushes a new object onto the JSON array, or creates one if one does not already exist in localStorage and the user does not provide a path to a JSON file
 function push(x) {
 
     console.clear();
 
-    //retrieves the JSON array
-    var retrieve = localStorage.getItem('locomotives');
-    var parsed = JSON.parse(retrieve);
+    if (localStorage.length != 0) {
 
-    //for debugging
-    console.log(parsed);
+        //retrieves the JSON array
+        var retrieve = localStorage.getItem('locomotives');
+        var parsed = JSON.parse(retrieve);
 
-    let newObject = x;
+        //for debugging
+        console.log(parsed);
 
-    //pushes the new object
-    parsed.locos.push(newObject);
+        let newObject = x;
 
-    //for debugging
-    console.log(parsed);
+        //pushes the new object
+        parsed.locos.push(newObject);
 
-    //updates localstorage
-    var store = JSON.stringify(parsed);
-    localStorage.setItem('locomotives', store);
+        //for debugging
+        console.log(parsed);
+
+        //updates localstorage
+        var store = JSON.stringify(parsed);
+        localStorage.setItem('locomotives', store);
+
+
+    } else {
+
+        /* 
+        
+        This condition will be fulfilled if the user does not provide a JSON file
+
+        This will allow the user to create an entirely new list using localStorage which can then be downloaded as a JSON file without the user having to select a file,
+        allowing the program to both edit existing lists AND create entirely new ones
+
+        */
+
+        //creates the array
+        var newArray = {
+
+            locos: []
+
+        };
+
+        //creates an index zero for the locos array so that the createtable function doesn't break (it needs at least one object to be present in the array at all times)
+        var indexZero = {
+
+            address: null,
+            name: null,
+            number: null
+            
+        }
+
+        newArray.locos.push(indexZero);
+
+        /*
+        var string = JSON.stringify(newArray);
+        
+        localStorage.setItem('locomotives', string);
+
+        var retrieve = localStorage.getItem('locomotives');
+        var parsed = JSON.parse(retrieve);
+        */
+
+        //for debugging
+        console.log(newArray);
+
+        let newObject = x;
+
+        //pushes the new object
+        newArray.locos.push(newObject);
+
+        //for debugging
+        console.log(newArray);
+
+        //updates localstorage
+        var store = JSON.stringify(newArray);
+        localStorage.setItem('locomotives', store);
+
+    }
 
 }
 

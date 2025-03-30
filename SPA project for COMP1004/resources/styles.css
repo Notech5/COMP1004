@@ -71,6 +71,18 @@ body {
 
 }
 
+.current_button {
+	
+	display: inline-block;
+	position: relative;
+	padding: 5px;
+	background-color: #B42319;
+	width: 20px*3%;
+	color: white;
+	text-decoration: none;
+
+}
+
 .button_darker {
 
 	display: inline-block;
