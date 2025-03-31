@@ -34,7 +34,7 @@
 
         <button class="button" onclick="class180()">Add Locomotives</button>
 
-        <button class="button" onclick="fileScreen()">Image Upload</button>
+        <!--<button class="current_button" onclick="fileScreen()">Image Upload</button>-->
 
         <button class="button" onclick="listScreen()">Loco List</button>
 
@@ -55,6 +55,8 @@
 
         <br>
 
+        <p>To get started, either go to the 'Loco List' screen and select a JSON file, or go to the 'Add Locomotives' screen to create a new list.</p>
+
     </div>
 
     <!--Generic div--> <!--        <---- That is now the only original part of the file XD    -->
@@ -71,7 +73,7 @@
 
         <button class="current_button" onclick="class180()">Add locomotives</button>
 
-        <button class="button" onclick="fileScreen()">Image Upload</button>
+        <!--<button class="current_button" onclick="fileScreen()">Image Upload</button>-->
 
         <button class="button" onclick="listScreen()">Loco List</button>
 
@@ -128,6 +130,7 @@
 
                     var formJSON = {
 
+                        image: null,
                         address: addressParsed,
                         name: locoName,
                         number: numberParsed
@@ -156,7 +159,7 @@
                 */
 
                 form.reset();
-                
+
             });
 
         </script>
@@ -175,7 +178,7 @@
 
         <button class="button" onclick="class180()">Add Locomotives</button>
 
-        <button class="current_button" onclick="fileScreen()">Image Upload</button>
+        <!--<button class="current_button" onclick="fileScreen()">Image Upload</button>-->
 
         <button class="button" onclick="listScreen()">Loco List</button>
 
@@ -203,7 +206,7 @@
 
         <button class="button" onclick="class180()">Add Locomotives</button>
 
-        <button class="button" onclick="fileScreen()">Image Upload</button>
+        <!--<button class="current_button" onclick="fileScreen()">Image Upload</button>-->
 
         <button class="current_button" onclick="listScreen()">Loco List</button>
 
@@ -211,75 +214,19 @@
 
         <p></p>
 
-        <p>Enter the file path of your JSON file here</p>
+        <p>Choose a JSON file below</p>
 
         <p style="color: red">WARNING</p>
 
-        <p style="color: red">This will overwrite your edited list, please make sure to save a copy before proceeding</p>
+        <p style="color: red">This will overwrite your existing list, please make sure to save a copy before proceeding</p>
 
-        <!---
-        <div id="message-box" style="display:none">
+        <br />
 
-            <p>Please enter a valid path</p>
+        <input type="file" id="fileInput" accept=".json">
+        <label for="fileInput"></label>
 
-        </div>
-        --->
+        <br />
 
-
-        <!---
-        <form id="JSONPath">
-
-            <label for="nameInput">JSON file path:</label><br>
-            <input type="text" id="pathInput" name="name" /><br />
-
-            <button type="submit">Submit</button>
-        </form><br />
-            -->
-
-        <script>
-
-            //this is the old code which allowed the user to define the path to the file
-
-            /*
-            const form2 = document.getElementById('JSONPath');
-
-            form2.addEventListener('submit', function (event) {
-                event.preventDefault();
-
-                var path = document.getElementById('pathInput').value;
-
-                //checks if the field is empty
-
-                if (path == '') {
-
-                    const element = document.getElementById('message-box');
-
-                    element.style.display = "block";
-
-                } else if (path != '') {
-
-                    const cleartable = document.getElementById('table-container');
-                    cleartable.innerHTML = "";
-
-                    localStorage.removeItem('locomotives');
-
-                    readJSON(path);
-
-                    createTable();
-
-                    const element = document.getElementById('message-box');
-
-                    element.style.display = "none";
-
-                }
-
-            });
-            */
-
-        </script>
-
-
-        <input type="file" id="fileInput">
         <script>
 
             //this is the new code which makes use of the filereader API
@@ -288,7 +235,7 @@
                 const file = event.target.files[0];
                 if (file) {
                     readJSON(file);
-                    
+
                 }
             });
         </script>
@@ -300,12 +247,33 @@
             localStorage.removeItem('locomotives');
 
             document.addEventListener("DOMContentLoaded", () => {
+
                 createTable();
+                theme();
+
             });
-            
+
         </script>
 
+        <br />
+
         <div id="table-container"></div>
+
+        <br />
+
+        <button class="button" onclick="downloadList()">Download List</button>
+
+        <br />
+
+        <br />
+
+        <div id="downloadMsgBox" style="display: none">
+
+            <p>Cannot download an empty list</p>
+
+        </div>
+
+        <br />
 
     </div>
 
