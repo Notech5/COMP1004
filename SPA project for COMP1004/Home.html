@@ -87,7 +87,22 @@
 
         <p>180107 at King's Cross</p>
 
+        <br />
+        
+        <div id="imageMsgBox" style="display: none;">
+
+            <p>You cannot upload an image by itself</p>
+
+        </div>
+
+
+
+
+        <br />
+
         <form id="myForm">
+
+            <input type="file" id="imageInput" accept="image/*">
 
             <label for="addressInput">Locomotive address:</label><br>
             <input type="number" id="addressInput" name="address" /><br />
@@ -99,21 +114,48 @@
             <input type="number" id="numberInput" name="number" /><br />
 
             <button type="submit">Submit</button>
+
         </form>
 
         <script>
+            
+            //to control the display of the div tag which displays messages
+            var msg = document.getElementById('imageMsgBox');
 
+            msg.style.display = "none";
+
+            //resets the base64 encoded string variable
+            var imageData = null;
+
+            //filereader to input images
+            document.getElementById('imageInput').addEventListener('change', function (event) {
+
+                const file = event.target.files[0];
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+
+                    //stores the base64 string in imageData
+                    imageData = e.target.result;
+
+                };
+
+                reader.readAsDataURL(file);
+
+            });
+
+            //locomotive name, number, and address form handling
             const form = document.getElementById('myForm');
 
             form.addEventListener('submit', function (event) {
+
                 event.preventDefault();
 
-                let isEmpty = false;
-
+                //address handling
                 const locoAddress = document.getElementById('addressInput').value;
                 const addressParsed = parseInt(locoAddress);
 
-                //this is a var as it may need to be altered before the JSON is pushed
+                //name handling
                 var locoName = document.getElementById('nameInput').value;
 
                 //checks if the field is empty
@@ -123,6 +165,7 @@
 
                 }
 
+                //number handling
                 const number = document.getElementById('numberInput').value;
                 const numberParsed = parseInt(number);
 
@@ -137,13 +180,69 @@
 
                     };
 
-                    console.log(formJSON);
+                    //only triggered if the user inputs an image
+                    if (imageData) {
 
-                    var string = JSON.stringify(formJSON);
+                        //generates a unique ID for the image
+                        const imageID = Date.now().toString();
 
-                    push(formJSON);
+                        const dbRequest = indexedDB.open('ImageDB', 1);
+                        dbRequest.onupgradeneeded = function (e) {
 
-                    createTable();
+                            const db = e.target.result;
+
+                            //checks if there is an existing store called images
+                            if (!db.objectStoreNames.contains('images')) {
+
+                                //creates one if no store is present
+                                db.createObjectStore('images', { keyPath: 'id' });
+
+                            }
+
+                        };
+
+                        //stores the image data and id, appends the image value of formJSON, then pushes it to localStorage and refreshes the table
+                        dbRequest.onsuccess = function (e) {
+                            const db = e.target.result;
+                            const store = db.transaction('images', 'readwrite').objectStore('images');
+                            store.put({ id: imageID, data: imageData });
+
+                            //store imageID in formJSON
+                            formJSON.image = imageID;
+                            console.log('Image saved with ID:', imageID);
+
+                            var string = JSON.stringify(formJSON);
+
+                            push(formJSON);
+
+                            createTable();
+
+                        }
+
+                    } else {
+
+                        //allows the user to add locos without choosing an image
+
+                        //0 will let the createTable function know to display a placeholder image
+                        formJSON.image = '0';
+
+                        var string = JSON.stringify(formJSON);
+
+                        push(formJSON);
+
+                        createTable();
+
+
+
+                    }
+
+                } else if (imageData && !formJSON) {
+
+                    msg.style.display = "block";
+
+                } else {
+
+                    msg.style.display = "none";
 
                 }
 
@@ -158,7 +257,13 @@
                 }
                 */
 
+                //clears the number and string input fields
                 form.reset();
+
+                //clears the image input button
+                imageForm = document.getElementById('imageInput');
+
+                imageForm.value = '';
 
             });
 

@@ -464,3 +464,56 @@ form2.addEventListener('submit', function (event) {
         </form><br />
 -->
 */
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+  //this is the new code which makes use of the filereader API
+
+            document.getElementById('imageInput').addEventListener('change', function (event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const imageData = e.target.result;
+                    const imageID = Date.now().toString(); // Unique ID
+
+                    const dbRequest = indexedDB.open('ImageDB', 1);
+
+                    dbRequest.onupgradeneeded = function (e) {
+                        const db = e.target.result;
+                        if (!db.objectStoreNames.contains('images')) {
+                            db.createObjectStore('images', { keyPath: 'id' });
+                        }
+                    };
+
+                    dbRequest.onsuccess = function (e) {
+                        const db = e.target.result;
+                        const store = db.transaction('images', 'readwrite').objectStore('images');
+                        store.put({ id: imageID, data: imageData });
+
+                        // Save multiple image IDs in localStorage
+                        //const imageRefs = JSON.parse(localStorage.getItem('savedImageRefs')) || [];
+                        //imageRefs.push(imageID);
+                        //localStorage.setItem('savedImageRefs', JSON.stringify(imageRefs));
+
+                        console.log('Image saved with ID:', imageID);
+                    };
+                };
+
+                reader.readAsDataURL(file);
+
+            });
+            
+
+*/
