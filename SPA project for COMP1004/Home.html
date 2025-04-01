@@ -37,13 +37,9 @@
         <br />
 
         <!--Buttons to switch between screens-->
-        <button class="current_button" onclick="home()">Home</button>
+        <button class="current_button" onclick="switchscreen('home');">Home</button>
 
-        <button class="button" onclick="class180()">Add Locomotives</button>
-
-        <!--<button class="current_button" onclick="fileScreen()">Image Upload</button>-->
-
-        <button class="button" onclick="listScreen()">Loco List</button>
+        <button class="button" onclick="switchscreen('ListScreen');">Loco List</button>
 
         <br>
 
@@ -66,57 +62,6 @@
 
     </div>
 
-    <!--Generic div--> <!--        <---- That is now the only original part of the file XD    -->
-
-    <div class="content" id="class180" style="display: none;">
-
-        <h1>Add and remove locomotives</h1>
-
-        <br />
-
-        <button class="button" onclick="switchTheme('ListScreen')">Switch Theme</button>
-
-        <br>
-
-        <br />
-
-        <!--Buttons to switch between screens-->
-
-        <button class="button" onclick="home()">Home</button>
-
-        <button class="current_button" onclick="class180()">Add locomotives</button>
-
-        <!--<button class="current_button" onclick="fileScreen()">Image Upload</button>-->
-
-        <button class="button" onclick="listScreen()">Loco List</button>
-
-        <br>
-
-        <p></p>
-
-        <br>
-
-        <img src="resources/images/180107.jpg" alt="180107 at King's Cross" />
-
-        <p>180107 at King's Cross</p>
-
-        <br />
-
-        <div id="imageMsgBox" style="display: none;">
-
-            <p>You cannot upload an image by itself</p>
-
-        </div>
-
-
-
-
-        <br />
-
-
-
-    </div>
-
     <!--Screen to display the contents of locos.json/creating table entries-->
     <div class="content" id="ListScreen" style="display: none;">
 
@@ -124,26 +69,22 @@
 
         <br />
 
-        <button class="button" onclick="switchTheme('ListScreen')">Switch Theme</button>
+        <button class="button" onclick="switchTheme()">Switch Theme</button>
 
         <br>
 
         <br />
 
         <!--Buttons to switch between screens-->
-        <button class="button" onclick="home()">Home</button>
+        <button class="button" onclick="switchscreen('home');">Home</button>
 
-        <button class="button" onclick="class180()">Add Locomotives</button>
-
-        <!--<button class="current_button" onclick="fileScreen()">Image Upload</button>-->
-
-        <button class="current_button" onclick="listScreen()">Loco List</button>
+        <button class="current_button" onclick="switchscreen('ListScreen');">Loco List</button>
 
         <br>
 
         <div id="imageMsgBox" style="display: none">
 
-            <p>Cannot download an empty list</p>
+            <p>You cannot enter an image by itself</p>
 
             <button class="button" onclick="acknowledgeMSG('imageMsgBox')">Acknowledge</button>
 
@@ -151,41 +92,7 @@
 
         <br />
 
-        <form id="myForm">
-
-            <input type="file" id="imageInput" accept="image/*">
-
-            <br />
-
-            <br />
-
-            <label for="addressInput">Locomotive address:</label><br>
-            <input type="number" id="addressInput" name="address" /><br />
-
-            <label for="nameInput">Locomotive name:</label><br>
-            <input type="text" id="nameInput" name="name" /><br />
-
-            <label for="numberInput">Locomotive number:</label><br>
-            <input type="number" id="numberInput" name="number" /><br />
-
-            <br />
-
-            <button type="submit" id="formSubmit">Submit</button>
-
-        </form>
-
-        <script>
-
-            //handles both image upload and number, address, and name input
-            locoFormHandler();
-
-        </script>
-
-        <br />
-
-        <p>OR</p>
-
-        <p>Choose a JSON file below</p>
+        <p>Choose a JSON file to get started:</p>
 
         <p style="color: red">WARNING</p>
 
@@ -202,6 +109,56 @@
 
             //JSON file upload function
             chooseJSON();
+
+        </script>
+
+        <p>OR</p>
+
+        <p>Create a new list with the form below:</p>
+
+        
+
+        <form id="myForm">
+
+            <input type="file" id="imageInput" accept="image/*">
+
+            <br />
+
+            <br />
+
+            <label for="addressInput">Locomotive address:</label><br>
+
+            <!--0 is the broadcast address, it cannot be set as a CV29 value as any commands 
+                sent to it will be received by all locomotives present on the layout
+
+                The extended address range falls between 1 and 10239 so these form the upper
+                and lower bounds
+            -->
+            <input type="number" id="addressInput" name="address" min="1" max="10239" />
+            
+            <br />
+
+            <label for="nameInput">Locomotive name:</label><br>
+            <input type="text" id="nameInput" name="name" /><br />
+
+            <label for="numberInput">Locomotive number:</label><br>
+
+            <!--There is no reason to prevent the user from entering '0' as a locomotive number,
+                but there needs to be an upper bound, which in this case would be the maximum 6
+                digit number
+                -->
+            <input type="number" id="numberInput" name="number" min="0" max="999999"/><br />
+
+            <br />
+
+            <button type="submit" id="formSubmit">Submit</button>
+
+        </form>
+
+        <script>
+
+            //handles both image upload and number, address, and name input
+            locoFormHandler();
 
         </script>
 

@@ -23,17 +23,7 @@ function readJSON(file) {
 
         localStorage.setItem('locomotives', string);
 
-
-
-        //storage(data);  //store the data
         createTable();  //create the table with the data
-
-
-        const nameLabel = document.querySelector('label[for="fileInput"]');
-
-        console.log(nameLabel);
-
-        //nameLabel.textContent = 'File Loaded: ' + fileInput.files[0].name;
 
     };
 
@@ -285,11 +275,6 @@ function downloadList() {
 
 }
 
-
-
-
-
-
 //function to switch between light and dark theme
 function switchTheme(active) {
 
@@ -342,47 +327,6 @@ function switchTheme(active) {
 
 }
 
-//---SWITCH FUNCTIONS---//
-
-//switches to the home div
-function home() {
-
-    switchscreen('home');
-
-}
-
-//switches to the class180 div
-//not used
-function class180() {
-
-    switchscreen('class180');
-
-}
-
-//switches to the json list div
-function listScreen() {
-
-    switchscreen("ListScreen");
-
-}
-
-//function to switch between div tags
-function switchscreen(current) {
-
-    const elements = document.querySelectorAll('.content');
-
-    elements.forEach(element => {
-
-        element.style.display = "none";
-
-    })
-
-    const active = document.getElementById(current);
-
-    active.style.display = "block";
-
-}
-
 //-----FORM HANDLERS-----/
 
 //moved from home.html, locomotive form input handling
@@ -423,9 +367,27 @@ function locoFormHandler() {
         event.preventDefault();
 
         //address handling
-        const locoAddress = document.getElementById('addressInput').value;
+        var locoAddress = document.getElementById('addressInput').value;
 
-        const addressParsed = parseInt(locoAddress);
+        //gets the input number
+        var locoNumber = document.getElementById('numberInput').value;
+
+        //the form already has a min attribute but this prevents users from bypassing it to input invalid data
+        if (locoNumber[0] == '-') {
+
+            locoNumber = locoNumber.slice(1);
+
+        }
+
+        //prevents the user entering negative addresses by removing the - symbol
+        //once again the form has a min attribute but this serves as an extra check
+        if (locoAddress[0] == '-') {
+
+            locoAddress = locoAddress.slice(1);
+
+            console.log(locoAddress);
+
+        }
 
         //name handling
         var locoName = document.getElementById('nameInput').value;
@@ -437,18 +399,49 @@ function locoFormHandler() {
 
         }
 
-        //number handling
-        const number = document.getElementById('numberInput').value;
-        const numberParsed = parseInt(number);
+        if (locoAddress !== '' && locoNumber !== '') {
 
-        if (!isNaN(addressParsed) && !isNaN(numberParsed)) {
+            //pads the locomotive address with 0s to allow compatibility between long and short adresses within the list
+            if (locoAddress.length < 4) {
+
+                /*
+                var zero = '0';
+    
+                var numOfZeros = 4 - locoAddress.length;
+    
+                locoAddress = zero.repeat(numOfZeros) + locoAddress;
+                */
+
+                locoAddress = locoAddress.padStart(4, '0');
+
+                console.log(locoAddress);
+
+            }
+
+            //this ensures the address conforms to NEM length standards by following the 'first two, last two' locomotive addressing rule
+            //the form already has a max attribute but this prevents users from bypassing it to input invalid data
+            if (locoAddress.length > 4) {
+
+                locoAddress = locoAddress.slice(0, 2) + locoAddress.slice(-2);
+
+                console.log(locoAddress);
+
+            }
+
+
+
+
+
+
+
+
 
             var formJSON = {
 
                 image: null,
-                address: addressParsed,
+                address: locoAddress,
                 name: locoName,
-                number: numberParsed
+                number: locoNumber
 
             };
 
@@ -466,8 +459,6 @@ function locoFormHandler() {
                 push(formJSON);
 
                 createTable();                
-
-                
 
             } else {
 
@@ -519,17 +510,6 @@ function locoFormHandler() {
 
         }
 
-        /*
-
-        //now redundant due to validation
-
-        if (isEmpty) {
-
-            alert('Please fill out all fields');
-
-        }
-        */
-
         //clears the number and string input fields
         form.reset();
 
@@ -546,11 +526,15 @@ function locoFormHandler() {
 function chooseJSON() {
 
     document.getElementById('fileInput').addEventListener('change', function (event) {
+
         const file = event.target.files[0];
+
         if (file) {
+
             readJSON(file);
 
         }
+
     });
 
 }
@@ -576,211 +560,23 @@ function acknowledgeMSG(current) {
 
     active.style.display = "none";
 
-
-
 }
 
+//---SWITCH FUNCTIONS---//
 
+//function to switch between div tags
+function switchscreen(current) {
 
+    const elements = document.querySelectorAll('.content');
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-//-----OLD CODE-----//
-
-//the original readJSON function which used the fetch command
-
-/*
-function readJSON(x) {
-
-    console.clear();
-
-    fetch(x)
-        .then(response => response.json())
-        .then(data => {
-
-            //delete data.locos[1];
-
-            //delete data.locos[4];
-
-            //for debugging
-            console.log(data)
-
-            //for debugging
-            console.log(data.locos.length);
-
-            //function to store the data in localstorage after reading it from the file
-            storage(data);
-
-            //creates the table after JSON read
-            createTable();
-
-        })
-
-        .catch(error => console.error('Error loading JSON:', error));
-
-}
-*/
-
-
-
-
-//-----OLD CODE FROM HOME.HTML-----//
-
-//this is the old code which allowed the user to define the path to the file
-
-/*
-const form2 = document.getElementById('JSONPath');
-
-form2.addEventListener('submit', function (event) {
-    event.preventDefault();
-
-    var path = document.getElementById('pathInput').value;
-
-    //checks if the field is empty
-
-    if (path == '') {
-
-        const element = document.getElementById('message-box');
-
-        element.style.display = "block";
-
-    } else if (path != '') {
-
-        const cleartable = document.getElementById('table-container');
-        cleartable.innerHTML = "";
-
-        localStorage.removeItem('locomotives');
-
-        readJSON(path);
-
-        createTable();
-
-        const element = document.getElementById('message-box');
+    elements.forEach(element => {
 
         element.style.display = "none";
 
-    }
+    });
 
-});
-*/
+    const active = document.getElementById(current);
 
-/*
-< !---
-    <div id="message-box" style="display:none">
+    active.style.display = "block";
 
-        <p>Please enter a valid path</p>
-
-    </div>
---->
-
-
-        < !---
-        <form id="JSONPath">
-
-            <label for="nameInput">JSON file path:</label><br>
-            <input type="text" id="pathInput" name="name" /><br />
-
-            <button type="submit">Submit</button>
-        </form><br />
--->
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-  //this is the new code which makes use of the filereader API
-
-            document.getElementById('imageInput').addEventListener('change', function (event) {
-                const file = event.target.files[0];
-                if (!file) return;
-
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const imageData = e.target.result;
-                    const imageID = Date.now().toString(); // Unique ID
-
-                    const dbRequest = indexedDB.open('ImageDB', 1);
-
-                    dbRequest.onupgradeneeded = function (e) {
-                        const db = e.target.result;
-                        if (!db.objectStoreNames.contains('images')) {
-                            db.createObjectStore('images', { keyPath: 'id' });
-                        }
-                    };
-
-                    dbRequest.onsuccess = function (e) {
-                        const db = e.target.result;
-                        const store = db.transaction('images', 'readwrite').objectStore('images');
-                        store.put({ id: imageID, data: imageData });
-
-                        // Save multiple image IDs in localStorage
-                        //const imageRefs = JSON.parse(localStorage.getItem('savedImageRefs')) || [];
-                        //imageRefs.push(imageID);
-                        //localStorage.setItem('savedImageRefs', JSON.stringify(imageRefs));
-
-                        console.log('Image saved with ID:', imageID);
-                    };
-                };
-
-                reader.readAsDataURL(file);
-
-            });
-            
-
-*/
-
-
-
-
-
-
-/*
-
-<form id="myForm">
-
-            <input type="file" id="imageInput" accept="image/*">
-
-            <label for="addressInput">Locomotive address:</label><br>
-            <input type="number" id="addressInput" name="address" /><br />
-
-            <label for="nameInput">Locomotive name:</label><br>
-            <input type="text" id="nameInput" name="name" /><br />
-
-            <label for="numberInput">Locomotive number:</label><br>
-            <input type="number" id="numberInput" name="number" /><br />
-
-            <button type="submit">Submit</button>
-
-        </form>
-
-        <script>
-            
-            locoFormHandler();
-
-            
-
-            
-
-        </script>
-
-*/
+}
