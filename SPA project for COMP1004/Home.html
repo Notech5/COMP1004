@@ -1,197 +1,189 @@
 <!DOCTYPE html>
 <html>
-<head>
+    <head>
     
-    <meta http-equiv="Content-Type"
-          content="text/html; charset=utf-8">
+        <meta http-equiv="Content-Type"
+              content="text/html; charset=utf-8">
         
-    <!--Stylesheet link-->
-    <link rel="stylesheet" href="resources/styles.css" />
+        <!--Stylesheet link-->
+        <link rel="stylesheet" href="resources/styles.css" />
 
-    <!--Script file-->
-    <script src="resources/website_scripts.js"></script>
-    
-    <!--Bootstrap link
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <!--Script file-->
+        <script src="resources/website_scripts.js"></script>
+   
+        <title>COMP1004 SPA</title>
+
+        <link rel="icon" type="image/x-icon" href="resources/images/180107.jpg" />
+
+    </head>
+
+    <body>
+
+        <!--Home div tag-->
+        <div class="content" id="home">
+
+            <h1>Home Page</h1>
+
+            <br />
+
+            <!--Buttons to switch between screens-->
+            <button class="current_button" onclick="switchscreen('home');">Home</button>
+
+            <button class="button" onclick="switchscreen('ListScreen');">Loco List</button>
+
+            <button class="button" onclick="switchTheme('ListScreen')">Switch Theme</button>
+
+            <br>
+
+            <br />
+
+            <!--Content is always below the navigation buttons-->
+            <img src="resources/images/91101.jpg" alt="180107 at King's Cross" />
+
+            <p>91101 and 387173 at King's Cross</p>
+
+            <br>
+
+            <p>Welcome to the website. This is an application designed to allow for the storage of model locomotive names, numbers, and DCC adresses</p>
+
+            <br>
+
+            <p>To get started, either go to the 'Loco List' screen and select a JSON file, or go to the 'Add Locomotives' screen to create a new list.</p>
+
+        </div>
+
+            <!--Screen to display the contents of locos.json/creating table entries-->
+        <div class="content" id="ListScreen" style="display: none;">
+
+            <h1>Add a new locomotive</h1>
+
+            <br />
+
+            <!--Buttons to switch between screens-->
+            <button class="button" onclick="switchscreen('home');">Home</button>
+
+            <button class="current_button" onclick="switchscreen('ListScreen');">Loco List</button>
+
+            <button class="button" onclick="switchTheme('ListScreen')">Switch Theme</button>
+
+            <br>
+
+            <div id="imageMsgBox" style="display: none">
+
+                <p>You cannot enter an image by itself</p>
+
+                <button class="button" onclick="acknowledgeMSG('imageMsgBox')">Acknowledge</button>
+
+            </div>
+
+            <br />
+
+            <p>Choose a JSON file to get started:</p>
+
+            <p style="color: red">WARNING</p>
+
+            <p style="color: red">This will overwrite your existing list, please make sure to save a copy before proceeding</p>
+
+            <br />
+
+            <input type="file" id="fileInput" accept=".json">
+            <label for="fileInput"></label>
+
+            <br />
+
+            <script>
+
+                //JSON file upload function
+                chooseJSON();
+
+            </script>
+
+            <p>OR</p>
+
+            <p>Create a new list with the form below:</p>
+
+            <form id="myForm">
+
+                <label for="imageInput">Upload an image:</label>
+
+                <br />
+
+                <br />
+
+                <input type="file" id="imageInput" accept="image/*">
+
+                <br />
+
+                <br />
+
+                <label for="addressInput">Locomotive address:</label><br>
+
+                <!--0 is the broadcast address, it cannot be set as a CV29 value as any commands
+            sent to it will be received by all locomotives present on the layout
+
+            The extended address range falls between 1 and 10239 so these form the upper
+            and lower bounds
         -->
+                <input type="number" id="addressInput" name="address" min="1" max="10239" />
 
-    <title>COMP1004 SPA</title>
+                <br />
 
-    <link rel="icon" type="image/x-icon" href="resources/images/180107.jpg" />
+                <label for="nameInput">Locomotive name:</label><br>
+                <input type="text" id="nameInput" name="name" /><br />
 
-</head>
+                <label for="numberInput">Locomotive number:</label><br>
 
-<body>
-
-    <!--Home div tag-->
-    <div class="content" id="home">
-
-        <h1>Home Page</h1>
-
-        <br />
-
-        <button class="button" onclick="switchTheme('ListScreen')">Switch Theme</button>
-
-        <br />
-
-        <br />
-
-        <!--Buttons to switch between screens-->
-        <button class="current_button" onclick="switchscreen('home');">Home</button>
-
-        <button class="button" onclick="switchscreen('ListScreen');">Loco List</button>
-
-        <br>
-        
-        <br />
-
-        <!--Content is always below the navigation buttons-->
-        <img src="resources/images/91101.jpg" alt="180107 at King's Cross" />
-
-        <p>91101 and 387173 at King's Cross</p>
-
-        <br>
-
-        <p>Welcome to the website. This is an application designed to allow for the storage of model locomotive names, numbers, and DCC adresses</p>
-
-        <br>
-
-        <p>To get started, either go to the 'Loco List' screen and select a JSON file, or go to the 'Add Locomotives' screen to create a new list.</p>
-
-    </div>
-
-    <!--Screen to display the contents of locos.json/creating table entries-->
-    <div class="content" id="ListScreen" style="display: none;">
-
-        <h1>Add a new locomotive</h1>
-
-        <br />
-
-        <button class="button" onclick="switchTheme()">Switch Theme</button>
-
-        <br>
-
-        <br />
-
-        <!--Buttons to switch between screens-->
-        <button class="button" onclick="switchscreen('home');">Home</button>
-
-        <button class="current_button" onclick="switchscreen('ListScreen');">Loco List</button>
-
-        <br>
-
-        <div id="imageMsgBox" style="display: none">
-
-            <p>You cannot enter an image by itself</p>
-
-            <button class="button" onclick="acknowledgeMSG('imageMsgBox')">Acknowledge</button>
-
-        </div>
-
-        <br />
-
-        <p>Choose a JSON file to get started:</p>
-
-        <p style="color: red">WARNING</p>
-
-        <p style="color: red">This will overwrite your existing list, please make sure to save a copy before proceeding</p>
-
-        <br />
-
-        <input type="file" id="fileInput" accept=".json">
-        <label for="fileInput"></label>
-
-        <br />
-
-        <script>
-
-            //JSON file upload function
-            chooseJSON();
-
-        </script>
-
-        <p>OR</p>
-
-        <p>Create a new list with the form below:</p>
-
-        
-
-        <form id="myForm">
-
-            <input type="file" id="imageInput" accept="image/*">
-
-            <br />
-
-            <br />
-
-            <label for="addressInput">Locomotive address:</label><br>
-
-            <!--0 is the broadcast address, it cannot be set as a CV29 value as any commands 
-                sent to it will be received by all locomotives present on the layout
-
-                The extended address range falls between 1 and 10239 so these form the upper
-                and lower bounds
+                <!--There is no reason to prevent the user from entering '0' as a locomotive number,
+            but there needs to be an upper bound, which in this case would be the maximum 6
+            digit number
             -->
-            <input type="number" id="addressInput" name="address" min="1" max="10239" />
-            
+                <input type="number" id="numberInput" name="number" min="0" max="999999" /><br />
+
+                <br />
+
+                <button type="submit" id="formSubmit">Submit</button>
+
+            </form>
+
+            <script>
+
+                //handles both image upload and number, address, and name input
+                locoFormHandler();
+
+            </script>
+
+            <script>
+
+                //function to refresh the application on reload
+                refresh();
+
+            </script>
+
             <br />
 
-            <label for="nameInput">Locomotive name:</label><br>
-            <input type="text" id="nameInput" name="name" /><br />
-
-            <label for="numberInput">Locomotive number:</label><br>
-
-            <!--There is no reason to prevent the user from entering '0' as a locomotive number,
-                but there needs to be an upper bound, which in this case would be the maximum 6
-                digit number
-                -->
-            <input type="number" id="numberInput" name="number" min="0" max="999999"/><br />
+            <div id="table-container"></div>
 
             <br />
 
-            <button type="submit" id="formSubmit">Submit</button>
+            <!--Button to download a copy of the list-->
+            <button class="button" onclick="downloadList()">Download List</button>
 
-        </form>
+            <br />
 
-        <script>
+            <br />
 
-            //handles both image upload and number, address, and name input
-            locoFormHandler();
+            <div id="downloadMsgBox" style="display: none">
 
-        </script>
+                <p>Cannot download an empty list</p>
 
-        <script>
+                <button class="button" onclick="acknowledgeMSG('downloadMsgBox')">Acknowledge</button>
 
-            //function to refresh the application on reload
-            refresh();
+            </div>
 
-        </script>
-
-        <br />
-
-        <div id="table-container"></div>
-
-        <br />
-
-        <!--Button to download a copy of the list-->
-        <button class="button" onclick="downloadList()">Download List</button>
-
-        <br />
-
-        <br />
-
-        <div id="downloadMsgBox" style="display: none">
-
-            <p>Cannot download an empty list</p>
-
-            <button class="button" onclick="acknowledgeMSG('downloadMsgBox')">Acknowledge</button>
+            <br />
 
         </div>
 
-        <br />
-
-    </div>
-
-</body>
+    </body>
 
 </html>

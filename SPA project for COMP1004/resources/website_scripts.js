@@ -2,11 +2,7 @@
 
 //---JSON FUNCTIONS---//
 
-/*
-readJSON accesses and reads the contents of the JSON file,
-then stores its contents in localStorage where they can be
-manipulated
-*/
+//reads JSON file, stores its contents in localStorage
 function readJSON(file) {
 
     localStorage.removeItem('locomotives');
@@ -23,7 +19,8 @@ function readJSON(file) {
 
         localStorage.setItem('locomotives', string);
 
-        createTable();  //create the table with the data
+        //creates the table
+        createTable();
 
     };
 
@@ -36,12 +33,16 @@ function readJSON(file) {
 //creates the table from localStorage
 function createTable() {
 
+    const placeholder = 'resources/images/placeholder.jpg';
+
     //checks if there's a key 'locomotives' in localStorage before proceeding to prevent errors
     if (localStorage.getItem('locomotives') !== null) {
 
         //retrieved loco data from localStorage
         var retrieveLocos = localStorage.getItem('locomotives');
+
         var parsedObject = JSON.parse(retrieveLocos);
+
         const data = parsedObject.locos;
 
         const container = document.getElementById('table-container');
@@ -49,44 +50,58 @@ function createTable() {
         container.innerHTML = "";
 
         const table = document.createElement('table');
+
         const tableHead = document.createElement('thead');
+
         const tableBody = document.createElement('tbody');
 
         //append the table head and body to table
         table.appendChild(tableHead);
+
         table.appendChild(tableBody);
 
         //creating table head
         let row = tableHead.insertRow();
+
         Object.keys(data[0]).forEach(key => {
 
             let th = document.createElement('th');
+
             th.textContent = key.toUpperCase();
+
             row.appendChild(th);
 
         });
 
         //creating table body
         data.forEach((item, index) => {
+
             let row = tableBody.insertRow();
+
             Object.keys(item).forEach((key) => {
+
                 let cell = row.insertCell();
 
                 if (key === "image") {
 
                     let img = document.createElement('img');
-                    img.style.width = "100%"; // Adjust as needed
+
+                    img.style.width = "80%"; // Adjust as needed
+
                     img.style.height = "auto";
+
+                    img.style.borderRadius = "0px";
 
                     //only attempt to fetch an image if item.image is valid
                     if (item.image !== null && item.image !== '0') {
 
-                        //console.log('Retrieving image with ID:', item.image);
-
                         const dbRequest = indexedDB.open('ImageDB', 1);
                         dbRequest.onsuccess = function (event) {
+
                             const db = event.target.result;
+
                             const transaction = db.transaction('images', 'readonly');
+
                             const store = transaction.objectStore('images');
 
                             //item.image is used as the key
@@ -107,14 +122,14 @@ function createTable() {
                                     } else {
 
                                         //uses placeholder if the stored data is not valid
-                                        img.src = 'placeholder.jpg';
+                                        img.src = placeholder;
 
                                     }
 
                                 } else {
 
                                     //uses placeholder if no image is found
-                                    img.src = 'placeholder.jpg'; 
+                                    img.src = placeholder; 
 
                                 }
 
@@ -124,7 +139,7 @@ function createTable() {
                             getRequest.onerror = function () {
 
                                 //uses placeholder if the request returns an erro
-                                img.src = 'placeholder.jpg'; 
+                                img.src = placeholder; 
 
                             };
 
@@ -133,7 +148,7 @@ function createTable() {
                         dbRequest.onerror = function () {
 
                             //uses placeholder if the database is inaccessible
-                            img.src = 'placeholder.jpg'; 
+                            img.src = placeholder; 
 
                         };
 
@@ -149,11 +164,14 @@ function createTable() {
                     //differentiates between intentionally null and lack of user image input
                     if (item.image === '0') {
 
-                        img.src = 'placeholder.jpg';
+                        img.src = placeholder;
 
                         //placeholder.jpg has different proportions so it is smaller
-                        img.style.width = "30%"; 
+
+                        img.style.width = "30%";
+
                         img.style.height = "auto";
+
                         img.style.border = "none";
 
                     }
@@ -206,6 +224,7 @@ function deleteRow(index) {
 
     //retrieves and parses the contents of localStorage
     var retrieve = localStorage.getItem('locomotives');
+
     var parsedObject = JSON.parse(retrieve);
 
     //removes the item at the current index of local storage since the table is created from the contents of localStorage
@@ -221,29 +240,6 @@ function deleteRow(index) {
 
 //---LOCALSTORAGE AND JSON HANDLING---//
 
-//reads data from the JSON file and stores it in localStorage
-function storage(data) {
-
-    //only stores the data if localstorage is empty to prevent erasure of user data
-    if (localStorage.getItem('locomotives') == null) {
-
-        localStorage.removeItem('locomotives');
-
-        var string = JSON.stringify(data);
-
-        localStorage.setItem('locomotives', string);
-
-        //debugging code
-        var testRetrieve = localStorage.getItem('locomotives');
-
-        var parsedObject = JSON.parse(testRetrieve);
-
-        console.log(parsedObject.locos[1]);
-
-    }
-
-}
-
 //pushes a new object onto the JSON array, or creates one if one does not already exist in localStorage and the user does not provide a path to a JSON file
 function push(x) {
 
@@ -253,6 +249,7 @@ function push(x) {
 
         //retrieves the JSON array
         var retrieve = localStorage.getItem('locomotives');
+
         var parsed = JSON.parse(retrieve);
 
         //for debugging
@@ -268,17 +265,12 @@ function push(x) {
 
         //updates localstorage
         var store = JSON.stringify(parsed);
-        localStorage.setItem('locomotives', store);
 
+        localStorage.setItem('locomotives', store);
 
     } else {
 
-        /* 
-        This condition will only be fulfilled if the user does not provide a JSON file
-
-        This will allow the user to create an entirely new list using localStorage which can then be downloaded as a JSON file without the user having to select a file,
-        allowing the program to both edit existing lists AND create entirely new ones
-        */
+        //only fulfilled if JSON file not provided, allows the user to create a fresh file
 
         //creates the array
         var newArray = {
@@ -311,6 +303,7 @@ function push(x) {
 
         //updates localstorage
         var store = JSON.stringify(newArray);
+
         localStorage.setItem('locomotives', store);
 
     }
@@ -331,7 +324,6 @@ function downloadList() {
         var parseForLengthCheck = JSON.parse(retrieved);
 
         if (parseForLengthCheck.locos.length > 1) {
-
 
             msgBox.style.display = "none";
 
@@ -390,13 +382,10 @@ function switchTheme(active) {
 
             localStorage.setItem('theme', 'Dark');
 
-           //document.getElementById(active).setAttribute('style', 'color: #FFFFFF; background-color: #212121;')
-
-           // document.getElementById(active).setAttribute('style', 'color: #FFFFFF;')
-
             document.querySelectorAll('div').forEach(div => {
 
                 div.style.color = '#FFFFFF';
+
                 div.style.backgroundColor = '#212121';
 
             });
@@ -407,13 +396,10 @@ function switchTheme(active) {
 
             localStorage.setItem('theme', 'Light');
 
-            //document.getElementById(active).setAttribute('style', 'color: #000000; background-color: #FFFFFF;')
-
-            //document.getElementById(active).setAttribute('style', 'color: #000000;')
-
             document.querySelectorAll('div').forEach(div => {
 
                 div.style.color = '#000000';
+
                 div.style.backgroundColor = '#FFFFFF';
 
             });
@@ -501,14 +487,6 @@ function locoFormHandler() {
             //pads the locomotive address with 0s to allow compatibility between long and short adresses within the list
             if (locoAddress.length < 4) {
 
-                /*
-                var zero = '0';
-    
-                var numOfZeros = 4 - locoAddress.length;
-    
-                locoAddress = zero.repeat(numOfZeros) + locoAddress;
-                */
-
                 locoAddress = locoAddress.padStart(4, '0');
 
                 console.log(locoAddress);
@@ -535,12 +513,11 @@ function locoFormHandler() {
 
             };
 
-            //only triggered if the user inputs an image
+            //lack of image input
             if (!imageData) {
 
                 imageID = '';
-                //allows the user to add locos without choosing an image
-
+                
                 //0 will let the createTable function know to display a placeholder image
                 formJSON.image = '0';
 
@@ -648,6 +625,7 @@ function refresh() {
             document.querySelectorAll('div').forEach(div => {
 
                 div.style.color = '#FFFFFF';
+
                 div.style.backgroundColor = '#212121';
 
             });
@@ -657,6 +635,7 @@ function refresh() {
             document.querySelectorAll('div').forEach(div => {
 
                 div.style.color = '#000000';
+
                 div.style.backgroundColor = '#FFFFFF';
 
             });
