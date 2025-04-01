@@ -1,4 +1,0 @@
-doesn't work ----> C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" --user-data-dir=C:\msedge-dev-data\ --disable-web-security
-
-
-the one that actually works ----> start msedge --disable-web-security --user-data-dir="C:\EdgeDev

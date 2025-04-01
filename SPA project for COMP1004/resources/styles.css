@@ -30,15 +30,17 @@ body {
 }
 
 .content {
-		
+	
 	margin-left: auto;
 	margin-right: auto;
 	display: block;
 	background-color: white;
 	border: 1px solid black;
-	width: 40%;
+	width: 50%;
+	height:auto;
 	padding: 5px;
 	text-align: center;
+	border-radius: 20px;
 
 }
 
@@ -60,19 +62,20 @@ body {
 */
 
 .button {
-
-	display: inline-block; 
-	position: relative; 
-	padding: 5px; 
-	background-color: #007BFF; 
+	
+	display: inline-block;
+	position: relative;
+	padding: 5px;
+	background-color: #007BFF;
 	width: 20px*3%;
-	color: white; 
+	color: white;
 	text-decoration: none;
+	border-radius: 5px;
 
 }
 
 .current_button {
-	
+
 	display: inline-block;
 	position: relative;
 	padding: 5px;
@@ -80,6 +83,7 @@ body {
 	width: 20px*3%;
 	color: white;
 	text-decoration: none;
+	border-radius: 5px;
 
 }
 
@@ -114,7 +118,6 @@ table, th, td {
 	border-collapse: separate;
 	border-spacing: 0px;
 	font-size: 13px;
-	border-radius: 20px;
-
+	
 }
 

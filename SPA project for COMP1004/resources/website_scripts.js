@@ -286,9 +286,59 @@ function downloadList() {
 }
 
 
-function theme() {
 
-    localStorage.setItem('theme', 'Light');
+
+
+
+//function to switch between light and dark theme
+function switchTheme(active) {
+
+    if (localStorage.getItem('theme') == null) {
+
+        //sets to light by default
+        localStorage.setItem('theme', 'Light');
+
+    } else if (localStorage.getItem('theme') !== null) {
+
+        var getTheme = localStorage.getItem('theme');
+
+        if (getTheme == 'Light') {
+
+            console.log('Light');
+
+            localStorage.setItem('theme', 'Dark');
+
+           //document.getElementById(active).setAttribute('style', 'color: #FFFFFF; background-color: #212121;')
+
+           // document.getElementById(active).setAttribute('style', 'color: #FFFFFF;')
+
+            document.querySelectorAll('div').forEach(div => {
+
+                div.style.color = '#FFFFFF';
+                div.style.backgroundColor = '#212121';
+
+            });
+
+        } else if (getTheme == 'Dark') {
+
+            console.log('Dark');
+
+            localStorage.setItem('theme', 'Light');
+
+            //document.getElementById(active).setAttribute('style', 'color: #000000; background-color: #FFFFFF;')
+
+            //document.getElementById(active).setAttribute('style', 'color: #000000;')
+
+            document.querySelectorAll('div').forEach(div => {
+
+                div.style.color = '#000000';
+                div.style.backgroundColor = '#FFFFFF';
+
+            });
+
+        }
+
+    }
 
 }
 
@@ -306,13 +356,6 @@ function home() {
 function class180() {
 
     switchscreen('class180');
-
-}
-
-//switches to the file upload screen div
-function fileScreen() {
-
-    switchscreen('uploadScreen');
 
 }
 
@@ -340,9 +383,9 @@ function switchscreen(current) {
 
 }
 
+//-----FORM HANDLERS-----/
+
 //moved from home.html, locomotive form input handling
-
-
 function locoFormHandler() {
 
     //to control the display of the div tag which displays messages
@@ -381,6 +424,7 @@ function locoFormHandler() {
 
         //address handling
         const locoAddress = document.getElementById('addressInput').value;
+
         const addressParsed = parseInt(locoAddress);
 
         //name handling
@@ -451,12 +495,16 @@ function locoFormHandler() {
 
                 //stores the image data and id, appends the image value of formJSON, then pushes it to localStorage and refreshes the table
                 dbRequest.onsuccess = function (e) {
+
                     const db = e.target.result;
+
                     const store = db.transaction('images', 'readwrite').objectStore('images');
+
                     store.put({ id: imageID, data: imageData });
 
                     //store imageID in formJSON
                     formJSON.image = imageID;
+
                     console.log('Image saved with ID:', imageID);
 
                     var string = JSON.stringify(formJSON);
@@ -467,11 +515,7 @@ function locoFormHandler() {
 
                 }
 
-
-
-
             }
-
 
         }
 
@@ -494,50 +538,9 @@ function locoFormHandler() {
 
         imageForm.value = '';
 
-        
-
     });
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //moved from home.html, JSON upload handling
 function chooseJSON() {
@@ -560,7 +563,7 @@ function refresh() {
     document.addEventListener("DOMContentLoaded", () => {
 
         createTable();
-        theme();
+        localStorage.setItem('theme', 'Light');
 
     });
 
