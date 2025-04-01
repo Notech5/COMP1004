@@ -37,10 +37,10 @@ body {
 	background-color: white;
 	border: 1px solid black;
 	width: 50%;
-	height:auto;
+	height:90%;
 	padding: 5px;
 	text-align: center;
-	border-radius: 20px;
+	border-radius: 25px;
 
 }
 
@@ -87,31 +87,21 @@ body {
 
 }
 
-.button_darker {
-
-	display: inline-block;
-	position: relative;
-	padding: 5px;
-	background-color: #68A2F5;
-	width: 23%;
-	color: white;
-	text-decoration: none;
-
-}
 
 img {
 	
 	display: block;
-	width: 60%;
-	height: 60%;
+	width: 40%;
+	height: 40%;
 	margin-left: auto;
 	margin-right: auto;
+	border: 1px solid;
 
 }
 
 table, th, td {
 	
-	width: 40%;
+	width: 60%;
 	margin-left: auto;
 	margin-right: auto;
 	border: 1px solid;

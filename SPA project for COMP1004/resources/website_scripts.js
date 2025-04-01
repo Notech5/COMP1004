@@ -68,22 +68,120 @@ function createTable() {
 
         //creating table body
         data.forEach((item, index) => {
-
             let row = tableBody.insertRow();
-            Object.values(item).forEach(value => {
+            Object.keys(item).forEach((key) => {
                 let cell = row.insertCell();
-                cell.textContent = value;
+
+                if (key === "image") {
+
+                    let img = document.createElement('img');
+                    img.style.width = "100%"; // Adjust as needed
+                    img.style.height = "auto";
+
+                    //only attempt to fetch an image if item.image is valid
+                    if (item.image !== null && item.image !== '0') {
+
+                        //console.log('Retrieving image with ID:', item.image);
+
+                        const dbRequest = indexedDB.open('ImageDB', 1);
+                        dbRequest.onsuccess = function (event) {
+                            const db = event.target.result;
+                            const transaction = db.transaction('images', 'readonly');
+                            const store = transaction.objectStore('images');
+
+                            //item.image is used as the key
+                            const getRequest = store.get(item.image);  
+
+                            getRequest.onsuccess = function () {
+
+                                if (getRequest.result) {
+
+                                    const imageData = getRequest.result.data;
+
+                                    //check if imageData is a valid base64 string or URL
+                                    if (imageData && imageData.startsWith('data:image')) {
+
+                                        //set image source
+                                        img.src = imageData;
+
+                                    } else {
+
+                                        //uses placeholder if the stored data is not valid
+                                        img.src = 'placeholder.jpg';
+
+                                    }
+
+                                } else {
+
+                                    //uses placeholder if no image is found
+                                    img.src = 'placeholder.jpg'; 
+
+                                }
+
+                            };
+
+                            //error handling
+                            getRequest.onerror = function () {
+
+                                //uses placeholder if the request returns an erro
+                                img.src = 'placeholder.jpg'; 
+
+                            };
+
+                        };
+
+                        dbRequest.onerror = function () {
+
+                            //uses placeholder if the database is inaccessible
+                            img.src = 'placeholder.jpg'; 
+
+                        };
+
+                    }
+
+                    //prevents the constant index 0 object from appearing in the table
+                    if (item.image === null) {
+
+                        img = null; // No image element is created
+
+                    }
+
+                    //differentiates between intentionally null and lack of user image input
+                    if (item.image === '0') {
+
+                        img.src = 'placeholder.jpg';
+
+                        //placeholder.jpg has different proportions so it is smaller
+                        img.style.width = "30%"; 
+                        img.style.height = "auto";
+                        img.style.border = "none";
+
+                    }
+
+                    if (img) {
+
+                        //only append the cell if an image is present
+                        cell.appendChild(img);
+
+                    }
+
+                } else {
+
+                    //prevents other cells from being cleared
+                    cell.textContent = item[key]; 
+
+                }
 
             });
 
-
             if (index > 0) {
 
+                //prevents a delete button being generated for index 0
                 let deleteCell = row.insertCell();
-                let deleteButton = document.createElement('button');
-                deleteButton.textContent = "Delete";
 
-                //deleteButton.classList.add('delete-btn');
+                let deleteButton = document.createElement('button');
+
+                deleteButton.textContent = "Delete";
                 deleteButton.onclick = function () {
 
                     deleteRow(index);
@@ -93,7 +191,6 @@ function createTable() {
                 deleteCell.appendChild(deleteButton);
 
             }
-
 
         });
 
@@ -337,10 +434,10 @@ function locoFormHandler() {
 
     msg.style.display = "none";
 
+    imageID = '';
+
     //resets the base64 encoded string variable
     var imageData = '';
-
-    imageID = '';
 
     //filereader to input images
     document.getElementById('imageInput').addEventListener('change', function (event) {
@@ -428,14 +525,7 @@ function locoFormHandler() {
 
             }
 
-
-
-
-
-
-
-
-
+            //formatting to push a JSON object onto the array
             var formJSON = {
 
                 image: null,
@@ -446,7 +536,7 @@ function locoFormHandler() {
             };
 
             //only triggered if the user inputs an image
-            if (imageData == '') {
+            if (!imageData) {
 
                 imageID = '';
                 //allows the user to add locos without choosing an image
@@ -463,8 +553,6 @@ function locoFormHandler() {
             } else {
 
                 imageID = '';
-
-                imageData = '';
 
                 //generates a unique ID for the image
                 imageID = Date.now().toString();
@@ -503,6 +591,8 @@ function locoFormHandler() {
                     push(formJSON);
 
                     createTable();
+
+                    imageData = '';
 
                 }
 
@@ -547,7 +637,31 @@ function refresh() {
     document.addEventListener("DOMContentLoaded", () => {
 
         createTable();
-        localStorage.setItem('theme', 'Light');
+
+        //also sets the theme based on the current contents of 'theme' in localstorage
+        if (localStorage.getItem('theme') == null) {
+
+            localStorage.setItem('theme', 'Light');
+
+        } else if (localStorage.getItem('theme') == 'Dark') {
+
+            document.querySelectorAll('div').forEach(div => {
+
+                div.style.color = '#FFFFFF';
+                div.style.backgroundColor = '#212121';
+
+            });
+
+        } else if (localStorage.getItem('theme') == 'Light') {
+
+            document.querySelectorAll('div').forEach(div => {
+
+                div.style.color = '#000000';
+                div.style.backgroundColor = '#FFFFFF';
+
+            });
+
+        }
 
     });
 
