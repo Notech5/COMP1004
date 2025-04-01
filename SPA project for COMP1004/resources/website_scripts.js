@@ -340,6 +340,165 @@ function switchscreen(current) {
 
 }
 
+//moved from home.html, locomotive form input handling
+
+
+function locoFormHandler() {
+
+    //to control the display of the div tag which displays messages
+    var msg = document.getElementById('imageMsgBox');
+
+    msg.style.display = "none";
+
+    //resets the base64 encoded string variable
+    var imageData = '';
+
+    imageID = '';
+
+    //filereader to input images
+    document.getElementById('imageInput').addEventListener('change', function (event) {
+
+        const file = event.target.files[0];
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+
+            //stores the base64 string in imageData
+            imageData = e.target.result;
+
+        };
+
+        reader.readAsDataURL(file);
+
+    });
+
+    //locomotive name, number, and address form handling
+    const form = document.getElementById('myForm');
+
+    form.addEventListener('submit', function (event) {
+
+        event.preventDefault();
+
+        //address handling
+        const locoAddress = document.getElementById('addressInput').value;
+        const addressParsed = parseInt(locoAddress);
+
+        //name handling
+        var locoName = document.getElementById('nameInput').value;
+
+        //checks if the field is empty
+        if (locoName == '') {
+
+            locoName = 'N/A';
+
+        }
+
+        //number handling
+        const number = document.getElementById('numberInput').value;
+        const numberParsed = parseInt(number);
+
+        if (!isNaN(addressParsed) && !isNaN(numberParsed)) {
+
+            var formJSON = {
+
+                image: null,
+                address: addressParsed,
+                name: locoName,
+                number: numberParsed
+
+            };
+
+            //only triggered if the user inputs an image
+            if (imageData == '') {
+
+                imageID = '';
+                //allows the user to add locos without choosing an image
+
+                //0 will let the createTable function know to display a placeholder image
+                formJSON.image = '0';
+
+                var string = JSON.stringify(formJSON);
+
+                push(formJSON);
+
+                createTable();                
+
+                
+
+            } else {
+
+                imageID = '';
+
+                imageData = '';
+
+                //generates a unique ID for the image
+                imageID = Date.now().toString();
+
+                const dbRequest = indexedDB.open('ImageDB', 1);
+                dbRequest.onupgradeneeded = function (e) {
+
+                    const db = e.target.result;
+
+                    //checks if there is an existing store called images
+                    if (!db.objectStoreNames.contains('images')) {
+
+                        //creates one if no store is present
+                        db.createObjectStore('images', { keyPath: 'id' });
+
+                    }
+
+                };
+
+                //stores the image data and id, appends the image value of formJSON, then pushes it to localStorage and refreshes the table
+                dbRequest.onsuccess = function (e) {
+                    const db = e.target.result;
+                    const store = db.transaction('images', 'readwrite').objectStore('images');
+                    store.put({ id: imageID, data: imageData });
+
+                    //store imageID in formJSON
+                    formJSON.image = imageID;
+                    console.log('Image saved with ID:', imageID);
+
+                    var string = JSON.stringify(formJSON);
+
+                    push(formJSON);
+
+                    createTable();
+
+                }
+
+
+
+
+            }
+
+
+        }
+
+        /*
+
+        //now redundant due to validation
+
+        if (isEmpty) {
+
+            alert('Please fill out all fields');
+
+        }
+        */
+
+        //clears the number and string input fields
+        form.reset();
+
+        //clears the image input button
+        imageForm = document.getElementById('imageInput');
+
+        imageForm.value = '';
+
+        
+
+    });
+
+}
 
 
 
@@ -348,6 +507,75 @@ function switchscreen(current) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//moved from home.html, JSON upload handling
+function chooseJSON() {
+
+    document.getElementById('fileInput').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            readJSON(file);
+
+        }
+    });
+
+}
+
+//moved from home.html, refreshes the SPA on load/reload
+function refresh() {
+
+    localStorage.removeItem('locomotives');
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        createTable();
+        theme();
+
+    });
+
+}
+
+//function to hide the message boxes by pressing an acknowledge button
+function acknowledgeMSG(current) {
+
+    const active = document.getElementById(current);
+
+    active.style.display = "none";
+
+
+
+}
 
 
 
@@ -515,5 +743,41 @@ form2.addEventListener('submit', function (event) {
 
             });
             
+
+*/
+
+
+
+
+
+
+/*
+
+<form id="myForm">
+
+            <input type="file" id="imageInput" accept="image/*">
+
+            <label for="addressInput">Locomotive address:</label><br>
+            <input type="number" id="addressInput" name="address" /><br />
+
+            <label for="nameInput">Locomotive name:</label><br>
+            <input type="text" id="nameInput" name="name" /><br />
+
+            <label for="numberInput">Locomotive number:</label><br>
+            <input type="number" id="numberInput" name="number" /><br />
+
+            <button type="submit">Submit</button>
+
+        </form>
+
+        <script>
+            
+            locoFormHandler();
+
+            
+
+            
+
+        </script>
 
 */
