@@ -2,20 +2,13 @@
 <html>
     <head>
     
-        <meta http-equiv="Content-Type"
-              content="text/html; charset=utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         
         <!--Stylesheet link-->
         <link rel="stylesheet" href="resources/styles.css" />
 
         <!--Script file-->
         <script src="resources/website_scripts.js"></script>
-
-        <script>
-
-           // window.handleJSON = new JSONhandler();
-
-        </script>
 
         <title>COMP1004 SPA</title>
 
@@ -33,11 +26,11 @@
             <br />
 
             <!--Buttons to switch between screens-->
-            <button class="current_button" onclick="switchscreen('home');">Home</button>
+            <button class="current_button" onclick="ContentChangeClass.switchscreen('home');">Home</button>
 
-            <button class="button" onclick="switchscreen('ListScreen');">Loco List</button>
+            <button class="button" onclick="ContentChangeClass.switchscreen('ListScreen');">Loco List</button>
 
-            <button class="button" onclick="switchTheme('ListScreen')">Switch Theme</button>
+            <button class="button" onclick="ContentChangeClass.switchTheme('ListScreen')">Switch Theme</button>
 
             <br>
 
@@ -66,11 +59,11 @@
             <br />
 
             <!--Buttons to switch between screens-->
-            <button class="button" onclick="switchscreen('home');">Home</button>
+            <button class="button" onclick="ContentChangeClass.switchscreen('home');">Home</button>
 
-            <button class="current_button" onclick="switchscreen('ListScreen');">Loco List</button>
+            <button class="current_button" onclick="ContentChangeClass.switchscreen('ListScreen');">Loco List</button>
 
-            <button class="button" onclick="switchTheme('ListScreen')">Switch Theme</button>
+            <button class="button" onclick="ContentChangeClass.switchTheme('ListScreen')">Switch Theme</button>
 
             <br>
 
@@ -78,7 +71,7 @@
 
                 <p>You cannot enter an image by itself</p>
 
-                <button class="button" onclick="acknowledgeMSG('imageMsgBox')">Acknowledge</button>
+                <button class="button" onclick="ContentChangeClass.acknowledgeMSG('imageMsgBox')">Acknowledge</button>
 
             </div>
 
@@ -96,12 +89,6 @@
             <label for="fileInput"></label>
 
             <br />
-
-            <script>
-
-                window.handleJSON;
-
-            </script>
 
             <p>OR</p>
 
@@ -128,7 +115,7 @@
 
                 The extended address range falls between 1 and 10239 so these form the upper
                 and lower bounds
-            -->
+                -->
                 <input type="number" id="addressInput" name="address" min="1" max="10239" />
 
                 <br />
@@ -139,9 +126,9 @@
                 <label for="numberInput">Locomotive number:</label><br>
 
                 <!--There is no reason to prevent the user from entering '0' as a locomotive number,
-            but there needs to be an upper bound, which in this case would be the maximum 6
-            digit number
-            -->
+                but there needs to be an upper bound, which in this case would be the maximum 6 
+                digit number
+                -->
                 <input type="number" id="numberInput" name="number" min="0" max="999999" /><br />
 
                 <br />
@@ -150,20 +137,6 @@
 
             </form>
 
-            <script>
-
-                //handles both image upload and number, address, and name input
-                //window.handleJSON.locoFormHandler();
-
-            </script>
-
-            <script>
-
-                //function to refresh the application on reload
-                refresh();
-
-            </script>
-
             <br />
 
             <div id="table-container"></div>
@@ -171,7 +144,7 @@
             <br />
 
             <!--Button to download a copy of the list-->
-            <button class="button" onclick="new JSONhandler().downloadList()">Download List</button>
+            <button class="button" onclick="handleJSON.downloadList()">Download List</button>
 
             <br />
 
@@ -181,7 +154,7 @@
 
                 <p>Cannot download an empty list</p>
 
-                <button class="button" onclick="acknowledgeMSG('downloadMsgBox')">Acknowledge</button>
+                <button class="button" onclick="ContentChangeClass.acknowledgeMSG('downloadMsgBox')">Acknowledge</button>
 
             </div>
 
@@ -190,17 +163,20 @@
         </div>
 
         <script>
+
+            refresh();
+
+            //creates objects of both classes only once DOM content is loaded to prevent errors
             document.addEventListener("DOMContentLoaded", function () {
+
                 window.handleJSON = new JSONhandler();
                 window.handleJSON.locoFormHandler();
+
+                window.ContentChangeClass = new changeContent();
+
             });
+
         </script>
-
-
-
-
-
-
 
     </body>
 

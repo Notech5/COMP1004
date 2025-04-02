@@ -1,23 +1,28 @@
 // JavaScript source code
 
-//---JSON FUNCTIONS---//
-
+//---JSON HANDLER---//
 class JSONhandler {
 
-    constructor(retrieve) {
+    constructor() {
 
+        //cleaner than before
+        this.fileUpload();
 
-        //this.retrieve = localStorage.getItem('locomotives'); <--- This is bad, it causes localStorage to be deleted and then input to be pushed in that order
+    }
 
-        //moved to the constructor 
+    //method to handle file uploads
+    fileUpload() {
+
         document.getElementById('fileInput').addEventListener('change', function (event) {
 
             const file = event.target.files[0];
 
-            if (file) {
+            if (file && file.type == "application/json") {
 
                 this.readJSON(file);
+
             }
+
         }.bind(this));
 
     }
@@ -40,7 +45,7 @@ class JSONhandler {
             localStorage.setItem('locomotives', string);
 
             //creates the table
-            createTable();
+            this.createTable();
 
         };
 
@@ -50,43 +55,12 @@ class JSONhandler {
 
     }
 
-    /*
-    chooseJSON() {
-
-        document.getElementById('fileInput').addEventListener('change', function (event) {
-
-            const file = event.target.files[0];
-
-            if (file) {
-
-                this.readJSON(file);
-
-            }
-
-        });
-
-    }
-    */
-
-
-
-
-
-
-
-
-
-
-
-
-
     //pushes a new object onto the JSON array, or creates one if one does not already exist in localStorage and the user does not provide a path to a JSON file
     push(x) {
 
         console.clear();
 
         var retrieved = localStorage.getItem('locomotives');
-
 
         if (/*localStorage.getItem('locomotives')*/ retrieved !== null) {
 
@@ -264,9 +238,9 @@ class JSONhandler {
 
                     var string = JSON.stringify(formJSON);
 
-                    JSONhandleClass.push(formJSON);
+                    this.push(formJSON);
 
-                    createTable();
+                    this.createTable();
 
                 } else {
 
@@ -306,13 +280,13 @@ class JSONhandler {
 
                         var string = JSON.stringify(formJSON);
 
-                        JSONhandleClass.push(formJSON);
+                        this.push(formJSON);
 
-                        createTable();
+                        this.createTable();
 
                         imageData = '';
 
-                    }
+                    }.bind(this);
 
                 }
 
@@ -326,11 +300,11 @@ class JSONhandler {
 
             imageForm.value = '';
 
-        });
+        }.bind(this));
 
     }
 
-    //function to download the list as a new file
+    //method to download the list as a new file
     downloadList() {
 
         const msgBox = document.getElementById('downloadMsgBox');
@@ -383,271 +357,209 @@ class JSONhandler {
 
     }
 
-}
+    //method to delete a row on the table by altering the contents of localStorage
+    deleteRow(index) {
 
-//ensures the definition is global
-let JSONhandleClass;
+        //retrieves and parses the contents of localStorage
+        var retrieve = localStorage.getItem('locomotives');
 
-//creates an alias for JSONhandler() only after DOM content is loaded
-document.addEventListener("DOMContentLoaded", function () {
-    JSONhandleClass = new JSONhandler();
-    createTable();
-});
+        var parsedObject = JSON.parse(retrieve);
+
+        //removes the item at the current index of local storage since the table is created from the contents of localStorage
+        parsedObject.locos.splice(index, 1);
+
+        //appends localStorage
+        localStorage.setItem('locomotives', JSON.stringify(parsedObject));
+
+        //refreshes the table
+        this.createTable();
+
+    }
 
 
+    createTable() {
 
+        const placeholder = 'resources/images/placeholder.jpg';
 
-//creates the table from localStorage
-function createTable() {
+        //checks if there's a key 'locomotives' in localStorage before proceeding to prevent errors
+        if (localStorage.getItem('locomotives') !== null) {
 
-    const placeholder = 'resources/images/placeholder.jpg';
+            //retrieved loco data from localStorage
+            var retrieveLocos = localStorage.getItem('locomotives');
 
-    //checks if there's a key 'locomotives' in localStorage before proceeding to prevent errors
-    if (localStorage.getItem('locomotives') !== null) {
+            var parsedObject = JSON.parse(retrieveLocos);
 
-        //retrieved loco data from localStorage
-        var retrieveLocos = localStorage.getItem('locomotives');
+            const data = parsedObject.locos;
 
-        var parsedObject = JSON.parse(retrieveLocos);
+            const container = document.getElementById('table-container');
 
-        const data = parsedObject.locos;
+            container.innerHTML = "";
 
-        const container = document.getElementById('table-container');
-       
-        container.innerHTML = "";
+            const table = document.createElement('table');
 
-        const table = document.createElement('table');
+            const tableHead = document.createElement('thead');
 
-        const tableHead = document.createElement('thead');
+            const tableBody = document.createElement('tbody');
 
-        const tableBody = document.createElement('tbody');
+            //append the table head and body to table
+            table.appendChild(tableHead);
 
-        //append the table head and body to table
-        table.appendChild(tableHead);
+            table.appendChild(tableBody);
 
-        table.appendChild(tableBody);
+            //creating table head
+            let row = tableHead.insertRow();
 
-        //creating table head
-        let row = tableHead.insertRow();
+            Object.keys(data[0]).forEach(key => {
 
-        Object.keys(data[0]).forEach(key => {
+                let th = document.createElement('th');
 
-            let th = document.createElement('th');
+                th.textContent = key.toUpperCase();
 
-            th.textContent = key.toUpperCase();
+                row.appendChild(th);
 
-            row.appendChild(th);
+            });
 
-        });
+            //creating table body
+            data.forEach((item, index) => {
 
-        //creating table body
-        data.forEach((item, index) => {
+                let row = tableBody.insertRow();
 
-            let row = tableBody.insertRow();
+                Object.keys(item).forEach((key) => {
 
-            Object.keys(item).forEach((key) => {
+                    let cell = row.insertCell();
 
-                let cell = row.insertCell();
+                    if (key === "image") {
 
-                if (key === "image") {
+                        let img = document.createElement('img');
 
-                    let img = document.createElement('img');
+                        img.style.width = "80%"; // Adjust as needed
 
-                    img.style.width = "80%"; // Adjust as needed
+                        img.style.height = "auto";
 
-                    img.style.height = "auto";
+                        img.style.borderRadius = "0px";
 
-                    img.style.borderRadius = "0px";
+                        //only attempt to fetch an image if item.image is valid
+                        if (item.image !== null && item.image !== '0') {
 
-                    //only attempt to fetch an image if item.image is valid
-                    if (item.image !== null && item.image !== '0') {
+                            const dbRequest = indexedDB.open('ImageDB', 1);
+                            dbRequest.onsuccess = function (event) {
 
-                        const dbRequest = indexedDB.open('ImageDB', 1);
-                        dbRequest.onsuccess = function (event) {
+                                const db = event.target.result;
 
-                            const db = event.target.result;
+                                const transaction = db.transaction('images', 'readonly');
 
-                            const transaction = db.transaction('images', 'readonly');
+                                const store = transaction.objectStore('images');
 
-                            const store = transaction.objectStore('images');
+                                //item.image is used as the key
+                                const getRequest = store.get(item.image);
 
-                            //item.image is used as the key
-                            const getRequest = store.get(item.image);  
+                                getRequest.onsuccess = function () {
 
-                            getRequest.onsuccess = function () {
+                                    if (getRequest.result) {
 
-                                if (getRequest.result) {
+                                        const imageData = getRequest.result.data;
 
-                                    const imageData = getRequest.result.data;
+                                        //check if imageData is a valid base64 string or URL
+                                        if (imageData && imageData.startsWith('data:image')) {
 
-                                    //check if imageData is a valid base64 string or URL
-                                    if (imageData && imageData.startsWith('data:image')) {
+                                            //set image source
+                                            img.src = imageData;
 
-                                        //set image source
-                                        img.src = imageData;
+                                        } else {
+
+                                            //uses placeholder if the stored data is not valid
+                                            img.src = placeholder;
+
+                                        }
 
                                     } else {
 
-                                        //uses placeholder if the stored data is not valid
+                                        //uses placeholder if no image is found
                                         img.src = placeholder;
 
                                     }
 
-                                } else {
+                                };
 
-                                    //uses placeholder if no image is found
-                                    img.src = placeholder; 
+                                //error handling
+                                getRequest.onerror = function () {
 
-                                }
+                                    //uses placeholder if the request returns an erro
+                                    img.src = placeholder;
 
-                            };
-
-                            //error handling
-                            getRequest.onerror = function () {
-
-                                //uses placeholder if the request returns an erro
-                                img.src = placeholder; 
+                                };
 
                             };
 
-                        };
+                            dbRequest.onerror = function () {
 
-                        dbRequest.onerror = function () {
+                                //uses placeholder if the database is inaccessible
+                                img.src = placeholder;
 
-                            //uses placeholder if the database is inaccessible
-                            img.src = placeholder; 
+                            };
 
-                        };
+                        }
+
+                        //prevents the constant index 0 object from appearing in the table
+                        if (item.image === null) {
+
+                            img = null; // No image element is created
+
+                        }
+
+                        //differentiates between intentionally null and lack of user image input
+                        if (item.image === '0') {
+
+                            img.src = placeholder;
+
+                            //placeholder.jpg has different proportions so it is smaller
+
+                            img.style.width = "30%";
+
+                            img.style.height = "auto";
+
+                            img.style.border = "none";
+
+                        }
+
+                        if (img) {
+
+                            //only append the cell if an image is present
+                            cell.appendChild(img);
+
+                        }
+
+                    } else {
+
+                        //prevents other cells from being cleared
+                        cell.textContent = item[key];
 
                     }
 
-                    //prevents the constant index 0 object from appearing in the table
-                    if (item.image === null) {
+                });
 
-                        img = null; // No image element is created
+                if (index > 0) {
 
-                    }
+                    //prevents a delete button being generated for index 0
+                    let deleteCell = row.insertCell();
 
-                    //differentiates between intentionally null and lack of user image input
-                    if (item.image === '0') {
+                    let deleteButton = document.createElement('button');
 
-                        img.src = placeholder;
+                    deleteButton.textContent = "Delete";
+                    deleteButton.onclick = function () {
 
-                        //placeholder.jpg has different proportions so it is smaller
-
-                        img.style.width = "30%";
-
-                        img.style.height = "auto";
-
-                        img.style.border = "none";
+                        JSONhandleClass.deleteRow(index);
 
                     }
 
-                    if (img) {
-
-                        //only append the cell if an image is present
-                        cell.appendChild(img);
-
-                    }
-
-                } else {
-
-                    //prevents other cells from being cleared
-                    cell.textContent = item[key]; 
+                    deleteCell.appendChild(deleteButton);
 
                 }
 
             });
 
-            if (index > 0) {
-
-                //prevents a delete button being generated for index 0
-                let deleteCell = row.insertCell();
-
-                let deleteButton = document.createElement('button');
-
-                deleteButton.textContent = "Delete";
-                deleteButton.onclick = function () {
-
-                    deleteRow(index);
-
-                };
-
-                deleteCell.appendChild(deleteButton);
-
-            }
-
-        });
-
-        //append the table to the HTML document
-        container.appendChild(table);
-
-    }
-
-}
-
-//function to delete a row on the table by altering the contents of localStorage
-function deleteRow(index) {
-
-    //retrieves and parses the contents of localStorage
-    var retrieve = localStorage.getItem('locomotives');
-
-    var parsedObject = JSON.parse(retrieve);
-
-    //removes the item at the current index of local storage since the table is created from the contents of localStorage
-    parsedObject.locos.splice(index, 1);
-
-    //appends localStorage
-    localStorage.setItem('locomotives', JSON.stringify(parsedObject));
-
-    //refreshes the table
-    createTable();
-
-}
-
-//---LOCALSTORAGE AND JSON HANDLING---//
-
-
-
-//function to switch between light and dark theme
-function switchTheme(active) {
-
-    if (localStorage.getItem('theme') == null) {
-
-        //sets to light by default
-        localStorage.setItem('theme', 'Light');
-
-    } else if (localStorage.getItem('theme') !== null) {
-
-        var getTheme = localStorage.getItem('theme');
-
-        if (getTheme == 'Light') {
-
-            console.log('Light');
-
-            localStorage.setItem('theme', 'Dark');
-
-            document.querySelectorAll('div').forEach(div => {
-
-                div.style.color = '#FFFFFF';
-
-                div.style.backgroundColor = '#212121';
-
-            });
-
-        } else if (getTheme == 'Dark') {
-
-            console.log('Dark');
-
-            localStorage.setItem('theme', 'Light');
-
-            document.querySelectorAll('div').forEach(div => {
-
-                div.style.color = '#000000';
-
-                div.style.backgroundColor = '#FFFFFF';
-
-            });
+            //append the table to the HTML document
+            container.appendChild(table);
 
         }
 
@@ -655,7 +567,98 @@ function switchTheme(active) {
 
 }
 
-//-----FORM HANDLERS-----/
+//-----CREATE JSON HANDLER CLASS OBJECT-----//
+
+//ensures the definition is global
+let JSONhandleClass;
+
+//creates an alias for JSONhandler() only after DOM content is loaded
+document.addEventListener("DOMContentLoaded", function () {
+    JSONhandleClass = new JSONhandler();
+    JSONhandleClass.createTable();
+});
+
+//-----HANDLES ALTERING CONTENT-----//
+class changeContent {
+
+    //method to switch between div tags
+    switchscreen(current) {
+
+        const elements = document.querySelectorAll('.content');
+
+        elements.forEach(element => {
+
+            element.style.display = "none";
+
+        });
+
+        const active = document.getElementById(current);
+
+        active.style.display = "block";
+
+    }
+
+    //method to hide the message boxes by pressing an acknowledge button
+    acknowledgeMSG(current) {
+
+        const active = document.getElementById(current);
+
+        active.style.display = "none";
+
+    }
+
+    //method to switch between light and dark mode
+    switchTheme(active) {
+
+        if (localStorage.getItem('theme') == null) {
+
+            //sets to light by default
+            localStorage.setItem('theme', 'Light');
+
+        } else if (localStorage.getItem('theme') !== null) {
+
+            var getTheme = localStorage.getItem('theme');
+
+            if (getTheme == 'Light') {
+
+                console.log('Light');
+
+                localStorage.setItem('theme', 'Dark');
+
+                document.querySelectorAll('div').forEach(div => {
+
+                    div.style.color = '#FFFFFF';
+
+                    div.style.backgroundColor = '#212121';
+
+                });
+
+            } else if (getTheme == 'Dark') {
+
+                console.log('Dark');
+
+                localStorage.setItem('theme', 'Light');
+
+                document.querySelectorAll('div').forEach(div => {
+
+                    div.style.color = '#000000';
+
+                    div.style.backgroundColor = '#FFFFFF';
+
+                });
+
+            }
+
+        }
+
+    }
+
+}
+
+//-----STANDALONE FUNCTIONS-----//
+
+//creates the table from localStorage
+
 
 //moved from home.html, refreshes the SPA on load/reload
 function refresh() {
@@ -664,7 +667,7 @@ function refresh() {
 
     document.addEventListener("DOMContentLoaded", () => {
 
-        createTable();
+        JSONhandleClass.createTable();
 
         //also sets the theme based on the current contents of 'theme' in localstorage
         if (localStorage.getItem('theme') == null) {
@@ -696,32 +699,3 @@ function refresh() {
     });
 
 }
-
-//function to hide the message boxes by pressing an acknowledge button
-function acknowledgeMSG(current) {
-
-    const active = document.getElementById(current);
-
-    active.style.display = "none";
-
-}
-
-//---SWITCH FUNCTIONS---//
-
-//function to switch between div tags
-function switchscreen(current) {
-
-    const elements = document.querySelectorAll('.content');
-
-    elements.forEach(element => {
-
-        element.style.display = "none";
-
-    });
-
-    const active = document.getElementById(current);
-
-    active.style.display = "block";
-
-}
-
