@@ -56,7 +56,7 @@ class JSONhandler {
     }
 
     //pushes a new object onto the JSON array, or creates one if one does not already exist in localStorage and the user does not provide a path to a JSON file
-    push(x) {
+    #push(x) {
 
         console.clear();
 
@@ -238,7 +238,7 @@ class JSONhandler {
 
                     var string = JSON.stringify(formJSON);
 
-                    this.push(formJSON);
+                    this.#push(formJSON);
 
                     this.createTable();
 
@@ -280,7 +280,7 @@ class JSONhandler {
 
                         var string = JSON.stringify(formJSON);
 
-                        this.push(formJSON);
+                        this.#push(formJSON);
 
                         this.createTable();
 
