@@ -358,7 +358,7 @@ class JSONhandler {
     }
 
     //method to delete a row on the table by altering the contents of localStorage
-    deleteRow(index) {
+    #deleteRow(index) {
 
         //retrieves and parses the contents of localStorage
         var retrieve = localStorage.getItem('locomotives');
@@ -548,9 +548,9 @@ class JSONhandler {
                     deleteButton.textContent = "Delete";
                     deleteButton.onclick = function () {
 
-                        JSONhandleClass.deleteRow(index);
+                        this.#deleteRow(index);
 
-                    }
+                    }.bind(this);
 
                     deleteCell.appendChild(deleteButton);
 
